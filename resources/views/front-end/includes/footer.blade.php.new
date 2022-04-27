@@ -1,0 +1,106 @@
+
+
+
+
+
+
+      <footer id="newsletter">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+          <div class="section-heading">
+            <h4>Vous avez des questions?</h4>
+          </div>
+        </div>
+        <div class="col-lg-6 offset-lg-3">
+          <form id="search" action="#" method="GET">
+            <div class="row">
+              <div class="col-lg-6 col-sm-6">
+                <fieldset>
+                  <input type="address" name="address" class="email" placeholder="Email Address..." autocomplete="on" required>
+                </fieldset>
+              </div>
+              <div class="col-lg-6 col-sm-6">
+                <fieldset>
+                  <button type="submit" class="main-button">Contact<i class="fa fa-angle-right"></i></button>
+                </fieldset>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-3">
+          <div class="footer-widget">
+            <h4>Contact</h4>
+            <p>ANG 11 Janvier et Mustapha El maani résidence Prima CASABLANCA, </p>
+            <p><a href="#">+212 (0) 7 59 61 61 62 </a></p>
+            <p><a href="#">support@elmoukef.ma</a></p>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="footer-widget">
+            <h4>Navigation</h4>
+            <ul>
+              <li><a href="#">Acceuil</a></li>
+             <!-- <li><a href="#">A Propos</a></li>-->
+              <li><a href="#">Devenir Maalam</a></li>
+            <!--  <li><a href="#">Demande S.O.S</a></li>-->
+              </ul>
+           
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="footer-widget">
+            <h4>A Propos</h4>
+            <ul>
+              <li><a href="#">CGU</a></li>
+              <li><a href="#">Mentions Legals</a></li>
+              <li><a href="#">Protection des données</a></li>
+              <li><a href="#">Conact</a></li>
+              <li><a href="#">Le Blog</a></li>
+            </ul>
+            <ul>
+              
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="footer-widget">
+            <div class="logo">
+              <img src="{{ asset('images/white-logo.png')}}" alt="">
+            </div>
+            <p>Nous vous proposons un concept de vente de services entre particuliers ou professionnels.
+</p>
+          </div>
+        </div>
+        <div class="col-lg-12">
+          <div class="copyright-text">
+            <p>Copyright © 2022 <a href="">Elmoukef.ma</a>.Tous les droits sont réservés. 
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <style type="text/css">.float{
+  position:fixed;
+  width:60px;
+  height:60px;
+  bottom:40px;
+  right:40px;
+  background-color:#25d366;
+  color:#FFF;
+  border-radius:50px;
+  text-align:center;
+  font-size:30px;
+  box-shadow: 2px 2px 3px #999;
+  z-index:100;
+}
+
+.my-float{
+  margin-top:16px;
+}</style>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+<a href="https://api.whatsapp.com/send?phone=212674619210" class="float" target="_blank">
+<i class="fa fa-whatsapp my-float"></i>
+</a>
