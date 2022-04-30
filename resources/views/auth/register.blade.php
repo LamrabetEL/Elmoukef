@@ -4,7 +4,7 @@
     $employees      = Helper::getEmployeesList();
     $departments    = App\Department::all();
     $locations      = App\Location::select('title', 'id')->get()->pluck('title', 'id')->toArray();
-    $roles          = Spatie\Permission\Models\Role::all()->toArray();
+    $roles          = Spatie\Permission\Models\Role::Where(array('public'=>1))->get()->toArray();
     $register_form = App\SiteManagement::getMetaValue('reg_form_settings');
     $reg_one_title = !empty($register_form) && !empty($register_form[0]['step1-title']) ? $register_form[0]['step1-title'] : trans('lang.join_for_good');
     $reg_one_subtitle = !empty($register_form) && !empty($register_form[0]['step1-subtitle']) ? $register_form[0]['step1-subtitle'] : trans('lang.join_for_good_reason');
@@ -84,7 +84,7 @@
                                             @if (!empty($locations))
                                                 <div class="form-group">
                                                     <span class="wt-select">
-                                                        {!! Form::select('locations', $locations, null, array('placeholder' => trans('lang.select_locations'), 'v-bind:class' => '{ "is-invalid": form_step2.is_locations_error }')) !!}
+                                                        {!! Form::select('locations', $locations, null, array('placeholder' => trans('lang.select_locations'),'id'=>'locations','v-bind:class' => '{ "is-invalid": form_step2.is_locations_error }')) !!}
                                                         <span class="help-block" v-if="form_step2.locations_error">
                                                             <strong v-cloak>@{{form_step2.locations_error}}</strong>
                                                         </span>
@@ -111,56 +111,22 @@
                                             @if(!empty($roles))
                                                 {{-- <ul class="wt-accordionhold wt-formaccordionhold accordion">
                                                     @foreach ($roles as $key => $role)
-                                                        @if (!in_array($role['id'] == 1, $roles))
-                                                            <li v-bind:class="{ 'role-is-invalid': form_step2.is_role_error }"">
-                                                                <div class="wt-accordiontitle" id="headingOne" data-toggle="collapse" data-target="#collapseOne">
-                                                                    <span class="wt-radio">
-                                                                    <input id="wt-company-{{$key}}" type="radio" name="role" value="{{{ $role['role_type'] }}}" checked="" v-model="user_role" v-on:change="selectedRole(user_role)">
-                                                                    <label for="wt-company-{{$key}}">
-                                                                        {{ $role['name'] === 'freelancer' ? trans('lang.freelancer') : trans('lang.employer')}}
-                                                                        <span> 
-                                                                            ({{ $role['name'] === 'freelancer' ? trans('lang.signup_as_freelancer') : trans('lang.signup_as_country')}})
-                                                                        </span>
-                                                                    </label>
+                                                        <li v-bind:class="{ 'role-is-invalid': form_step2.is_role_error }"">
+                                                            <div class="wt-accordiontitle" id="headingOne-{{{ $role['role_type'] }}}" data-toggle="collapse" data-target="#collapseOne-{{{ $role['role_type'] }}}">
+                                                                <span class="wt-radio">
+                                                                <input id="wt-company-{{$key}}" type="radio" name="role" value="{{{ $role['role_type'] }}}" checked="" v-model="user_role" v-on:change="selectedRole(user_role)">
+                                                                <label for="wt-company-{{$key}}">
+                                                                    deedee {{ $role['name'] === 'freelancer' ? trans('lang.freelancer') : trans('lang.employer')}}
+                                                                    <span> 
+                                                                        ({{ $role['name'] === 'freelancer' ? trans('lang.signup_as_freelancer') : trans('lang.signup_as_country')}})
                                                                     </span>
-                                                                </div>
-                                                                @if ($role['role_type'] === 'employer')
-                                                                    @if ($show_emplyr_inn_sec === 'true')
-                                                                        <div class="wt-accordiondetails collapse show" id="collapseOne" aria-labelledby="headingOne" v-if="is_show">
-                                                                            <div class="wt-radioboxholder">
-                                                                                <div class="wt-title">
-                                                                                    <h4>{{{ trans('lang.no_of_employees') }}}</h4>
-                                                                                </div>
-                                                                                @foreach ($employees as $key => $employee)
-                                                                                    <span class="wt-radio">
-                                                                                        <input id="wt-just-{{{$key}}}" type="radio" name="employees" value="{{{$employee['value']}}}" checked="">
-                                                                                        <label for="wt-just-{{{$key}}}">{{{$employee['title']}}}</label>
-                                                                                    </span>
-                                                                                @endforeach
-                                                                            </div>
-                                                                            @if ($departments->count() > 0)
-                                                                                <div class="wt-radioboxholder">
-                                                                                    <div class="wt-title">
-                                                                                        <h4>{{{ trans('lang.your_department') }}}</h4>
-                                                                                    </div>
-                                                                                    @foreach ($departments as $key => $department)
-                                                                                        <span class="wt-radio">
-                                                                                            <input id="wt-department-{{{$department->id}}}" type="radio" name="department" value="{{{$department->id}}}" checked="">
-                                                                                            <label for="wt-department-{{{$department->id}}}">{{{$department->title}}}</label>
-                                                                                        </span>
-                                                                                    @endforeach
-                                                                                </div>
-                                                                                <div class="form-group wt-othersearch d-none">
-                                                                                    <input type="text" name="department_name" class="form-control" placeholder="{{{ trans('lang.enter_department') }}}">
-                                                                                </div>
-                                                                            @endif
-                                                                        </div>
-                                                                    @endif    
-                                                                @endif
-                                                                @if ($role['role_type'] === 'freelancer')
+                                                                </label>
+                                                                </span>
+                                                            </div>
+                                                            @if ($role['role_type'] === 'employer')
                                                                 @if ($show_emplyr_inn_sec === 'true')
-                                                                    <div class="wt-accordiondetails collapse show" id="collapseOne" aria-labelledby="headingOne" v-if="is_show">
-                                                                        <div class="wt-radioboxholder">
+                                                                    <div class="wt-accordiondetails collapse show" id="collapseOne-{{{ $role['role_type'] }}}" aria-labelledby="headingOne-{{{ $role['role_type'] }}}" v-if="is_show">
+                                                                        <phpdiv class="wt-radioboxholder">
                                                                             <div class="wt-title">
                                                                                 <h4>{{{ trans('lang.no_of_employees') }}}</h4>
                                                                             </div>
@@ -190,9 +156,40 @@
                                                                     </div>
                                                                 @endif    
                                                             @endif
-                                                            </li>
-
+                                                            @if ($role['role_type'] === 'freelancer')
+                                                            @if ($show_emplyr_inn_sec === 'true')
+                                                                <div class="wt-accordiondetails collapse show" id="collapseOne" aria-labelledby="headingOne-{{{ $role['role_type'] }}}" v-if="is_show">
+                                                                    <div class="wt-radioboxholder">
+                                                                        <div class="wt-title">
+                                                                            <h4>{{{ trans('lang.no_of_employees') }}}</h4>
+                                                                        </div>
+                                                                        @foreach ($employees as $key => $employee)
+                                                                            <span class="wt-radio">
+                                                                                <input id="wt-just-{{{$key}}}" type="radio" name="employees" value="{{{$employee['value']}}}" checked="">
+                                                                                <label for="wt-just-{{{$key}}}">{{{$employee['title']}}}</label>
+                                                                            </span>
+                                                                        @endforeach
+                                                                    </div>
+                                                                    @if ($departments->count() > 0)
+                                                                        <div class="wt-radioboxholder">
+                                                                            <div class="wt-title">
+                                                                                <h4>{{{ trans('lang.your_department') }}}</h4>
+                                                                            </div>
+                                                                            @foreach ($departments as $key => $department)
+                                                                                <span class="wt-radio">
+                                                                                    <input id="wt-department-{{{$department->id}}}" type="radio" name="department" value="{{{$department->id}}}" checked="">
+                                                                                    <label for="wt-department-{{{$department->id}}}">{{{$department->title}}}</label>
+                                                                                </span>
+                                                                            @endforeach
+                                                                        </div>
+                                                                        <div class="form-group wt-othersearch d-none">
+                                                                            <input type="text" name="department_name" class="form-control" placeholder="{{{ trans('lang.enter_department') }}}">
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                            @endif    
                                                         @endif
+                                                        </li>
                                                     @endforeach
                                                 </ul> --}}
                                                 {{--<span class="help-block" v-if="form_step2.role_error">
@@ -257,9 +254,6 @@
                                         </div>
                                     </fieldset>
                                     <div class="wt-haslayout" v-if="step === 2" v-cloak>
-									
-
-
                                         <fieldset class="wt-registerformgroup">
                                             <div class="wt-registerhead">
                                                 <div class="wt-title">
@@ -280,7 +274,7 @@
                                             @if (!empty($locations))
                                                 <div class="form-group">
                                                     <span class="wt-select">
-                                                        {!! Form::select('locations', $locations, null, array('placeholder' => trans('lang.select_locations'), 'v-bind:class' => '{ "is-invalid": form_step2.is_locations_error }')) !!}
+                                                        {!! Form::select('locations', $locations, null, array('placeholder' => trans('lang.select_locations'), 'id'=> 'locations','required'=> 'true', 'v-bind:class' => '{ "is-invalid": form_step2.is_locations_error }')) !!}
                                                         <span class="help-block" v-if="form_step2.locations_error">
                                                             <strong v-cloak>@{{form_step2.locations_error}}</strong>
                                                         </span>
@@ -298,64 +292,56 @@
                                                 <ul class="wt-accordionhold wt-formaccordionhold accordion">
 											
                                                     @foreach ($roles as $key => $role)
-                                                        @if (!in_array($role['id'] == 1 , $roles))
-                                                            <li v-bind:class="{ 'role-is-invalid': form_step2.is_role_error }" >
-                                                                <div class="wt-accordiontitle" id="headingOne" data-toggle="collapse" data-target="#collapseOne">
-                                                                    <span class="wt-radio" onclick="handleClick({{{$key}}})">
-                                                                    <input id="wt-company-{{$key}}" type="radio" name="role" value="{{{ $role['role_type'] }}}" checked="" v-model="user_role" v-on:change="selectedRole(user_role)">
-                                                                    <label for="wt-company-{{$key}}">
+                                                        <li v-bind:class="{ 'role-is-invalid': form_step2.is_role_error }" >
+                                                            <div class="wt-accordiontitle" id="headingOne-{{{ $role['role_type'] }}}" data-toggle="collapse" data-target="#collapseOne-{{{ $role['role_type'] }}}">
+                                                                <span class="wt-radio" onclick="handleClick({{{$key}}})">
+                                                                    <input id="wt-company-{{{$key}}}" type="radio" name="role" value="{{{ $role['role_type'] }}}" checked="" v-model="user_role" v-on:change="selectedRole(user_role)">
+                                                                    <label for="wt-company-{{{$key}}}">
                                                                         {{ $role['name'] === 'freelancer' ? trans('lang.freelancer') : trans('lang.employer')}}
                                                                         <span> 
-                                                                       ({{ $role['name'] === 'freelancer' ? trans('lang.signup_as_freelancer') : trans('lang.signup_as_country')}})
+                                                                        ({{ $role['name'] === 'freelancer' ? trans('lang.signup_as_freelancer') : trans('lang.signup_as_country')}})
                                                                         </span>
                                                                     </label>
-                                                                    </span>
-                                                                </div>
-                                                              
-                                                            </li>
-                                                        @endif
+                                                                </span>
+                                                            </div>
+                                                        </li>
                                                        
                                                         @if ($role['role_type'] === 'employer' || $role['role_type'] === 'freelancer')
-                                                        @if ($show_emplyr_inn_sec === 'true')
-                                                            <div class="wt-accordiondetails collapse show" id="collapseOne" aria-labelledby="headingOne" v-if="is_show">
-                                                                <div class="wt-radioboxholder">
-                                                                
-
-                                                                    <div class="wt-title">
-                                                                        <h4>{{{ trans('lang.type_of_employees') }}}</h4>
-                                                                    </div>
-                                                                    <span>
-                                                                        <input onclick="handleClick(1);" type="radio" name="type_employeur" value="professionnel" checked="checked">
-                                                                        <label for="wt-just-1">Professionnel</label>
-                                                                    </span>
-                                                                    <span>
-                                                                        <input onclick="handleClick(2);" type="radio" name="type_employeur" value="particulier">
-                                                                        <label for="wt-just-1">Particulier</label>
-                                                                    </span>
-                                                                    <br>
-                                                                </div>
-                                                                @if ($departments->count() > 0)
+                                                            @if ($show_emplyr_inn_sec === 'true')
+                                                                <div class="wt-accordiondetails collapse show" id="collapseOne-{{{ $role['role_type'] }}}" aria-labelledby="headingOne-{{{ $role['role_type'] }}}">
                                                                     <div class="wt-radioboxholder">
                                                                         <div class="wt-title">
-                                                                            <h4>{{{ trans('lang.your_department') }}}</h4>
+                                                                            <h4>{{{ trans('lang.type_of_employees') }}}</h4>
                                                                         </div>
-                                                                        @foreach ($departments as $key => $department)
-                                                                            <span class="wt-radio">
-                                                                                <input id="wt-department-{{{$department->id}}}" type="radio" name="department" value="{{{$department->id}}}" checked="">
-                                                                                <label for="wt-department-{{{$department->id}}}">{{{$department->title}}}</label>
-                                                                            </span>
-                                                                        @endforeach
+                                                                        <span>
+                                                                            <input onclick="handleClick(1);checkParentRadio({{{$key}}});" type="radio" name="type_employeur" value="professionnel" checked="checked">
+                                                                            <label for="wt-just-1">Professionnel</label>
+                                                                        </span>
+                                                                        <span>
+                                                                            <input onclick="handleClick(2); checkParentRadio({{{$key}}});" type="radio" name="type_employeur" value="particulier">
+                                                                            <label for="wt-just-1">Particulier</label>
+                                                                        </span>
+                                                                        <br>
                                                                     </div>
-                                                                    <div class="form-group wt-othersearch d-none">
-                                                                        <input type="text" name="department_name" class="form-control" placeholder="{{{ trans('lang.enter_department') }}}">
-                                                                    </div>
-                                                                @endif
-                                                            </div>
-                                                        @endif    
-                                                    @endif
-                                                   
-                                                      
-                                                   
+                                                                    @if ($departments->count() > 0)
+                                                                        <div class="wt-radioboxholder">
+                                                                            <div class="wt-title">
+                                                                                <h4>{{{ trans('lang.your_department') }}}</h4>
+                                                                            </div>
+                                                                            @foreach ($departments as $key => $department)
+                                                                                <span class="wt-radio">
+                                                                                    <input id="wt-department-{{{$department->id}}}" type="radio" name="department" value="{{{$department->id}}}" checked="">
+                                                                                    <label for="wt-department-{{{$department->id}}}">{{{$department->title}}}</label>
+                                                                                </span>
+                                                                            @endforeach
+                                                                        </div>
+                                                                        <div class="form-group wt-othersearch d-none">
+                                                                            <input type="text" name="department_name" class="form-control" placeholder="{{{ trans('lang.enter_department') }}}">
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                            @endif    
+                                                        @endif
                                                     @endforeach
                                                 </ul>
                                                 <span class="help-block" v-if="form_step2.role_error">
@@ -369,8 +355,10 @@
 
 var type = 'professionnel';
 
+function checkParentRadio(id){
+    $('#wt-company-'+id).prop("checked", true);
+}
 function handleClick(myRadio1) {
-	
     if(myRadio1 == '1'){
 
 			$('#text_type').text("{{{ trans('lang.add_rc') }}}");
@@ -379,15 +367,13 @@ function handleClick(myRadio1) {
 			$('#ice_text').text("{{{ trans('lang.add_ice') }}}");
 			type = 'professionnel';
 			document.getElementById("erreur_cnie").textContent = "";
+            
 	}else{
 
 			$('#text_type').text("{{{ trans('lang.add_cine') }}}");
 			$('#type_contrat').html('<input type="file" id="file" class="form-control" accept="image/png, image/jpeg" required>');
 			$('#type_contrat_ice').html('');
 			$('#ice_text').text(" ");
-
-
-
 
 			type = 'particulier';
 			document.getElementById("erreur_cnie").textContent = "";
@@ -396,101 +382,112 @@ function handleClick(myRadio1) {
 
 var next = false;
 
-												function IsInputFileEmpty(){
-													
-												if(type == 'particulier'){
-														if (jQuery('#file').val() == '')
-														{
-															document.getElementById("file").style.border = "1px solid red";
+    function IsInputFileEmpty(){
+        
+    if(type == 'particulier'){
+            if (jQuery('#file').val() == '')
+            {
+                document.getElementById("file").style.border = "1px solid red";
 
-														}else{
+            }else{
 
-																			var fd = new FormData();
-																			var files = $('#file')[0].files;
-																			
-																			// Check file selected or not
-																			if(files.length > 0 ){
-																			   fd.append('file',files[0]);
-
-
-																			   $.ajax({
-																				headers: {
-																					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-																				},
-																				  url: 'upload-cine',
-																				  type: 'post',
-																				  data: fd,
-																				  contentType: false,
-																				  processData: false,
-																				  success: function(response){
-																					  var obj = JSON.parse(response);
-
-																					if(obj['status'] == 'true'){
-																						
-																						document.getElementById("cnie").value = obj['msg'];
-																						document.getElementById("erreur_cnie").textContent = "";
-																						document.getElementById("file").style.border = "";
-																						next = true;
-
-																					}else{
-																						
-																						document.getElementById("file").style.border = "1px solid red";
-																						document.getElementById("erreur_cnie").textContent = obj['msg'];
-																						next = false;	
+                var fd = new FormData();
+                var files = $('#file')[0].files;
+                myRadio1
+                // Check file selected or not
+                if(files.length > 0 ){
+                    fd.append('file',files[0]);
 
 
-																					}
-																				  },
-																			   });
-																			}else{
-																			   alert("Please select a file.");
-																			}
+                    $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                        url: 'upload-cine',
+                        type: 'post',
+                        data: fd,
+                        contentType: false,
+                        processData: false,
+                        success: function(response){
+                            var obj = JSON.parse(response);
 
-														}
-													}else{ 
+                        if(obj['status'] == 'true'){
+                            
+                            document.getElementById("cnie").value = obj['msg'];
+                            document.getElementById("erreur_cnie").textContent = "";
+                            document.getElementById("file").style.border = "";
+                            next = true;
+
+                        }else{
+                            
+                            document.getElementById("file").style.border = "1px solid red";
+                            document.getElementById("erreur_cnie").textContent = obj['msg'];
+                            next = false;	
 
 
-														var rc = document.getElementById("rc").value;
-														var ice = document.getElementById("ice").value;
-														
-														
-														if(rc == ""){
-																document.getElementById("rc").style.border = "1px solid red";
-																document.getElementById("erreur_cnie").textContent = "veuillez ajouter votre RC";
-																next = false;	
-														}else{
-																document.getElementById("erreur_cnie").textContent = "";
-																document.getElementById("rc").style.border = "";
-																next = true;
+                        }
+                        },
+                    });
+                }else{
+                    alert("Please select a file.");
+                }
 
-														}
-														
-														if(ice == ""){
-																document.getElementById("ice").style.border = "1px solid red";
-																document.getElementById("erreur_ice").textContent = "veuillez ajouter votre Ice";
-																next = false;	
-														}else{
-																document.getElementById("erreur_ice").textContent = "";
-																document.getElementById("ice").style.border = "";
-																next = true;
-														}
+            }
+        }else{ 
 
-																					
-																					
-													}
-													
-									
-														var num = document.getElementById("num").value;
-														if(num == ""){
-																document.getElementById("num").style.border = "1px solid red";
-																document.getElementById("erreur_num").textContent = "veuillez ajouter votre numero";
-																next = false;	
-														}else{
-																document.getElementById("erreur_num").textContent = "";
-																document.getElementById("num").style.border = "";
-																next = true;
 
-														}
+            var rc = document.getElementById("rc").value;
+            var ice = document.getElementById("ice").value;
+            
+            
+            if(rc == ""){
+                    document.getElementById("rc").style.border = "1px solid red";
+                    document.getElementById("erreur_cnie").textContent = "veuillez ajouter votre RC";
+                    next = false;	
+            }else{
+                    document.getElementById("erreur_cnie").textContent = "";
+                    document.getElementById("rc").style.border = "";
+                    next = true;
+
+            }
+            
+            if(ice == ""){
+                    document.getElementById("ice").style.border = "1px solid red";
+                    document.getElementById("erreur_ice").textContent = "veuillez ajouter votre Ice";
+                    next = false;	
+            }else{
+                    document.getElementById("erreur_ice").textContent = "";
+                    document.getElementById("ice").style.border = "";
+                    next = true;
+            }
+
+                                        
+                                        
+        }
+        
+
+            var num = document.getElementById("num").value;
+            if(num == ""){
+                    document.getElementById("num").style.border = "1px solid red";
+                    document.getElementById("erreur_num").textContent = "veuillez ajouter votre numero";
+                    next = false;	
+            }else{
+                    document.getElementById("erreur_num").textContent = "";
+                    document.getElementById("num").style.border = "";
+                    next = true;
+
+            }
+
+            var select = document.getElementById("locations");
+            var locations = select.options[select.selectedIndex].value;
+            if(locations == ""){
+                document.getElementById("locations").style.border = "1px solid red";
+                document.getElementById("erreur_locations").textContent = "veuillez choisir une ville";
+                next = false;	
+            }else{
+                document.getElementById("locations").style.border = "";
+                next = true;
+            }
 									
 	
 	if(next == true){
@@ -549,36 +546,36 @@ var next = false;
                                         </fieldset>
 										
 										<div id="suivant" style=" display: none; ">
-										<fieldset class="wt-registerformgroup">
-												<div class="form-group form-group-half">
-                                                <input id="password" type="password" class="form-control" name="password" placeholder="{{{ trans('lang.ph_pass') }}}" v-bind:class="{ 'is-invalid': form_step2.is_password_error }">
-                                                <span class="help-block" v-if="form_step2.password_error">
-                                                    <strong v-cloak>@{{form_step2.password_error}}</strong>
-                                                </span>
-                                            </div>
-                                            <div class="form-group form-group-half">
-                                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" placeholder="{{{ trans('lang.ph_retry_pass') }}}" v-bind:class="{ 'is-invalid': form_step2.is_password_confirm_error }">
-                                                <span class="help-block" v-if="form_step2.password_confirm_error">
-                                                    <strong v-cloak>@{{form_step2.password_confirm_error}}</strong>
-                                                </span>
-                                            </div>
-										</fieldset>
-                                        <fieldset class="wt-termsconditions">
-                                            <div class="wt-checkboxholder">
-                                                <span class="wt-checkbox">
-                                                    <input id="termsconditions" type="checkbox" name="termsconditions" checked="">
-                                                    <label for="termsconditions"><span><a href="http://elmoukef.ma/page/privacy-policy" target="_blank"> {{{ $term_note }}}</span></a></label>
-                                                    <span class="help-block" v-if="form_step2.termsconditions_error">
-                                                        <strong style="color: red;" v-cloak>{{trans('lang.register_termsconditions_error')}}</strong>
+                                            <fieldset class="">
+                                                    <div class="form-group form-group-half">
+                                                    <input id="password" type="password" class="form-control" name="password" placeholder="{{{ trans('lang.ph_pass') }}}" v-bind:class="{ 'is-invalid': form_step2.is_password_error }">
+                                                    <span class="help-block" v-if="form_step2.password_error">
+                                                        <strong v-cloak>@{{form_step2.password_error}}</strong>
                                                     </span>
-                                                </span>
-                                                <a href="#" @click.prevent="prev()" class="wt-btn">{{{ trans('lang.previous') }}}</a>
+                                                </div>
+                                                <div class="form-group form-group-half">
+                                                    <input id="password-confirm" type="password" class="form-control" name="password_confirmation" placeholder="{{{ trans('lang.ph_retry_pass') }}}" v-bind:class="{ 'is-invalid': form_step2.is_password_confirm_error }">
+                                                    <span class="help-block" v-if="form_step2.password_confirm_error">
+                                                        <strong v-cloak>@{{form_step2.password_confirm_error}}</strong>
+                                                    </span>
+                                                </div>
+                                            </fieldset>
+                                            <fieldset class="wt-termsconditions">
+                                                <div class="wt-checkboxholder">
+                                                    <span class="wt-checkbox">
+                                                        <input id="termsconditions" type="checkbox" name="termsconditions" checked="">
+                                                        <label for="termsconditions"><span><a href="http://elmoukef.ma/page/privacy-policy" target="_blank"> {{{ $term_note }}}</span></a></label>
+                                                        <span class="help-block" v-if="form_step2.termsconditions_error">
+                                                            <strong style="color: red;" v-cloak>{{trans('lang.register_termsconditions_error')}}</strong>
+                                                        </span>
+                                                    </span>
+                                                    <a href="#" @click.prevent="prev()" class="wt-btn">{{{ trans('lang.previous') }}}</a>
 
-                                                <a href="#" @click.prevent="checkStep2('{{ trans('lang.email_not_config') }}')" class="wt-btn">{{{ trans('lang.continue') }}}</a>
+                                                    <a href="#" @click.prevent="checkStep2('{{ trans('lang.email_not_config') }}')" class="wt-btn">{{{ trans('lang.continue') }}}</a>
 
-                                            </div>
-                                        </fieldset>
-</div>
+                                                </div>
+                                            </fieldset>
+                                        </div>
                                     </div>
                                 </form>
                                 <div class="wt-joinformc" v-if="step === 3" v-cloak>

@@ -429,6 +429,7 @@ if (document.getElementById("registration")) {
             user_email: '',
             first_name: '',
             last_name: '',
+            locations: '',
             form_step1: {
                 email_error: '',
                 is_email_error: false,
@@ -486,6 +487,9 @@ if (document.getElementById("registration")) {
                 this.form_step2.is_termsconditions_error = false;
                 this.form_step2.role = '';
                 this.form_step2.is_role = false;
+                this.form_step2.is_location_error = false;
+                this.form_step2.location_error = '';
+                
                 var self = this
                 let registerForm = document.getElementById('register_form')
                 let formData = new FormData(registerForm)
@@ -523,6 +527,10 @@ if (document.getElementById("registration")) {
                         if (error.response.data.errors.role) {
                             self.form_step2.role_error = error.response.data.errors.role[0];
                             self.form_step2.is_role_error = true;
+                        }
+                        if (error.response.data.errors.locations) {
+                            self.form_step2.locations_error = error.response.data.errors.locations[0];
+                            self.form_step2.is_locations_error = true;
                         }
                     })
             },
@@ -567,6 +575,10 @@ if (document.getElementById("registration")) {
                 this.form_step2.is_termsconditions_error = false;
                 this.form_step2.role = '';
                 this.form_step2.is_role = false;
+                this.form_step2.locations_error = '';
+                this.form_step2.is_locations_error = false;
+                this.form_step2.role = '';
+                this.form_step2.is_role = false;
                 var self = this;
                 axios.post(APP_URL + '/register/form-step2-custom-errors', form_data).
                     then(function (response) {
@@ -588,6 +600,10 @@ if (document.getElementById("registration")) {
                         if (error.response.data.errors.role) {
                             self.form_step2.role_error = error.response.data.errors.role[0];
                             self.form_step2.is_role_error = true;
+                        }
+                        if (error.response.data.errors.locations) {
+                            self.form_step2.locations_error = error.response.data.errors.locations[0];
+                            self.form_step2.is_locations_error = true;
                         }
                     });
             },
@@ -619,6 +635,7 @@ if (document.getElementById("registration")) {
                             self.custom_error = true;
                             if (response.data.email_error) self.form_errors.push(response.data.email_error);
                             if (response.data.password_error) self.form_errors.push(response.data.password_error);
+                            if (response.data.locations_error) self.form_errors.push(response.data.locations_error);
                         }
                         else if (response.data.type == 'server_error') {
                             self.loading = false;
@@ -1395,6 +1412,7 @@ if (document.getElementById("location")) {
         mounted: function () {
             if (document.getElementsByClassName("flash_msg") != null) {
                 flashVue.$emit('showFlashMessage');
+                
             }
         },
         data: {

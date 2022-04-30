@@ -138,6 +138,7 @@ class PublicController extends Controller
                 'password' => 'required|string|min:6|confirmed',
                 'password_confirmation' => 'required',
                 'termsconditions' => 'required',
+                'locations' => 'required|numeric',
                 'role' => 'not_in:admin',
             ]
         );
@@ -162,6 +163,7 @@ class PublicController extends Controller
                 'email' => 'required|email|unique:users',
                 'password' => 'required|string|min:6|confirmed',
                 'password_confirmation' => 'required',
+                'locations' => 'required|numeric',
                 'termsconditions' => 'required',
                 'role' => 'not_in:admin',
             ]
