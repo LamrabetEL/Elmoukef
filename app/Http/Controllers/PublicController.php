@@ -184,7 +184,7 @@ class PublicController extends Controller
         $json = array();
         if (Session::has('user_id')) {
             $id = Session::get('user_id');
-            $email = Session::get('email');
+            //$email = Session::get('email');
             $password = Session::get('password');
             $user = User::find($id);
             if (!empty($request['code'])) {
@@ -193,6 +193,7 @@ class PublicController extends Controller
                     $user->verification_code = null;
                     $user->save();
                     $json['type'] = 'success';
+                    $email = $user->email;
                     //send mail
                     if (!empty(config('mail.username')) && !empty(config('mail.password'))) {
                         $email_params = array();
