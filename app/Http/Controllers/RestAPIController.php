@@ -1254,7 +1254,7 @@ class RestAPIController extends Controller
                             $email_params['report_by_link'] = url('profile/' . $user->slug);
                             $email_params['reported_by'] = Helper::getUserName($user->id);
                             $email_params['message'] = $request['description'];
-                            Mail::to(config('mail.username'))
+                            Mail::to(config('mail.mailAdmin'))
                                 ->send(
                                     new AdminEmailMailable(
                                         'admin_email_report_project',
@@ -1788,7 +1788,7 @@ class RestAPIController extends Controller
                         $email_params['name'] = Helper::getUserName($current_user);
                         $email_params['link'] = url('profile/' . $user->slug);
                         $admin_mail = User::role('admin')->select('email')->pluck('email')->first();
-                        Mail::to(config('mail.username'))
+                        Mail::to(config('mail.mailAdmin'))
                             ->send(
                                 new AdminEmailMailable(
                                     'admin_email_new_job_posted',
@@ -2226,7 +2226,7 @@ class RestAPIController extends Controller
                         $email_params['name'] = Helper::getUserName($current_user);
                         $email_params['link'] = url('profile/' . $user->slug);
                         $template_data = Helper::getAdminServicePostedEmailContent();
-                        Mail::to(config('mail.username'))
+                        Mail::to(config('mail.mailAdmin'))
                             ->send(
                                 new AdminEmailMailable(
                                     'admin_email_new_service_posted',
@@ -2267,7 +2267,7 @@ class RestAPIController extends Controller
                     $email_params['name'] = Helper::getUserName($current_user);
                     $email_params['link'] = url('profile/' . $user->slug);
                     $template_data = Helper::getAdminServicePostedEmailContent();
-                    Mail::to(config('mail.username'))
+                    Mail::to(config('mail.mailAdmin'))
                         ->send(
                             new AdminEmailMailable(
                                 'admin_email_new_service_posted',
